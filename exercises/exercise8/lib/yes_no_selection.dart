@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'app_state.dart';
+import 'src/widgets.dart';
 
 class YesNoSelection extends StatelessWidget {
   const YesNoSelection({
@@ -6,30 +8,54 @@ class YesNoSelection extends StatelessWidget {
     required this.state,
     required this.onSelection,
   });
-
-  final bool? state;
-  final void Function(bool) onSelection;
+  final Attending state;
+  final void Function(Attending) onSelection;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        ElevatedButton(
-          onPressed: () => onSelection(true),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: state == true ? Colors.green : null,
-          ),
-          child: const Text('Yes'),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: () => onSelection(false),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: state == false ? Colors.red : null,
-          ),
-          child: const Text('No'),
-        ),
-      ],
-    );
+    switch (state) {
+      case Attending.yes:
+        return Row(
+          children: [
+            FilledButton(
+              onPressed: () => onSelection(Attending.yes),
+              child: const Text('YES'),
+            ),
+            const SizedBox(width: 8),
+            TextButton(
+              onPressed: () => onSelection(Attending.no),
+              child: const Text('NO'),
+            ),
+          ],
+        );
+      case Attending.no:
+        return Row(
+          children: [
+            TextButton(
+              onPressed: () => onSelection(Attending.yes),
+              child: const Text('YES'),
+            ),
+            const SizedBox(width: 8),
+            FilledButton(
+              onPressed: () => onSelection(Attending.no),
+              child: const Text('NO'),
+            ),
+          ],
+        );
+      default:
+        return Row(
+          children: [
+            StyledButton(
+              onPressed: () => onSelection(Attending.yes),
+              child: const Text('YES'),
+            ),
+            const SizedBox(width: 8),
+            StyledButton(
+              onPressed: () => onSelection(Attending.no),
+              child: const Text('NO'),
+            ),
+          ],
+        );
+    }
   }
 }
