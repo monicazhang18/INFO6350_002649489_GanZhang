@@ -1,6 +1,6 @@
 {
-    "name": "exercise8",
-    "short_name": "exercise8",
+    "name": "gtk_flutter",
+    "short_name": "gtk_flutter",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -12,7 +12,20 @@
           "package_name": "com.example.exercise8"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "889574089374-t5elesf8iin51nk6k6q6d5acgdji9qnh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.exercise8",
+            "certificate_hash": "3c68c6bd1c29cfa4075a33f7495cea159ce73ac5"
+          }
+        },
+        {
+          "client_id": "889574089374-rbhqvedusrfo3kqv4uca9425o2nkc0on.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBE5YmlpOJyFWtNIzKtjBsF-LucapTqN-0"
@@ -20,7 +33,41 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889574089374-rbhqvedusrfo3kqv4uca9425o2nkc0on.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889574089374:android:c2bace2925f53b096fd18f",
+        "android_client_info": {
+          "package_name": "com.example.gtk_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889574089374-rbhqvedusrfo3kqv4uca9425o2nkc0on.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE5YmlpOJyFWtNIzKtjBsF-LucapTqN-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889574089374-rbhqvedusrfo3kqv4uca9425o2nkc0on.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

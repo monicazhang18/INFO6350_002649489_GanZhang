@@ -1,70 +1,99 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart'; // new
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';               // new
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';                 // new
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
-}
+import 'app_state.dart';
+import 'home_page.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) =>
-    const MaterialApp(home: MyHomePage(title: 'Exercise 8'));
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  String _status = '还没写入';
-  final _db = FirebaseFirestore.instance;
-
-  void _onPressed() async {
-    setState(() {
-      _counter++;
-      _status = '写入中…';
-    });
-    try {
-      await _db.collection('test').add({
-        'count': _counter,
-        'ts': FieldValue.serverTimestamp(),
-      });
-      setState(() {
-        _status = '已写入 (count=$_counter)';
-      });
-    } catch (e) {
-      setState(() {
-        _status = '写入失败：$e';
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext c) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('已点击: $_counter 次'),
-            const SizedBox(height: 8),
-            Text('Firestore 状态: $_status'),
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomePage(),
+      routes: [
+        GoRoute(
+          path: 'sign-in',
+          builder: (context, state) {
+            return SignInScreen(
+              actions: [
+                ForgotPasswordAction((context, email) {
+                  final uri = Uri(
+                    path: '/sign-in/forgot-password',
+                    queryParameters: {'email': email},
+                  );
+                  context.push(uri.toString());
+                }),
+                AuthStateChangeAction((context, state) {
+                  final user = switch (state) {
+                    SignedIn state => state.user,
+                    UserCreated state => state.credential.user,
+                    _ => null
+                  };
+                  if (user == null) return;
+                  if (state is UserCreated) {
+                    user.updateDisplayName(user.email!.split('@')[0]);
+                  }
+                  if (!user.emailVerified) {
+                    user.sendEmailVerification();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please verify your email')),
+                    );
+                  }
+                  context.pushReplacement('/');
+                }),
+              ],
+            );
+          },
+          routes: [
+            GoRoute(
+              path: 'forgot-password',
+              builder: (context, state) {
+                final args = state.uri.queryParameters;
+                return ForgotPasswordScreen(
+                  email: args['email'],
+                  headerMaxExtent: 200,
+                );
+              },
+            )
           ],
         ),
+        GoRoute(
+          path: 'profile',
+          builder: (context, state) => ProfileScreen(
+            providers: const [],
+            actions: [SignedOutAction((context) => context.pushReplacement('/'))],
+          ),
+        ),
+      ],
+    ),
+  ],
+);
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(ChangeNotifierProvider(
+    create: (context) => ApplicationState(),
+    builder: ((context, child) => const App()),
+  ));
+}
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Firebase Meetup',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+        textTheme: GoogleFonts.robotoTextTheme(),
+        useMaterial3: true,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onPressed,
-        child: const Icon(Icons.send),
-      ),
+      routerConfig: _router,
     );
   }
 }
